@@ -56,6 +56,9 @@ WHERE row_id IN (
 SELECT *
 FROM household_income;
 
+SELECT COUNT(*)
+FROM household_income;
+
 -- Data cleaning for 'State_Name' column
 SELECT DISTINCT State_Name
 FROM household_income ;
@@ -80,4 +83,114 @@ SET State_ab = UPPER(State_ab) ;
 -- Data cleaning for 'County' column
 SELECT DISTINCT County
 FROM household_income ;
+
+--No cleaning needed
+
+-- Data cleaning for 'Place' column
+SELECT DISTINCT Place
+FROM household_income ;
+
+SELECT *
+FROM household_income
+WHERE Place IS NULL OR Place = '' ;
+
+SELECT County, City, Place
+FROM household_income
+WHERE COunty = 'Autauga County' ;
+
+UPDATE household_income
+SET Place = 'Autaugaville'
+WHERE County = 'Autauga County' AND City = 'Vinemont' ;
+
+-- Data cleaning for 'Type' column
+SELECT `Type`, COUNT(*)
+FROM household_income
+GROUP BY `Type` ;
+
+UPDATE household_income
+SET `Type` = 'Borough'
+WHERE `Type` = 'Boroughs' ;
+
+UPDATE household_income
+SET `Type` = 'CDP'
+WHERE `Type` = 'CPD' ;
+
+-- Data cleaning for 'Primary' column
+SELECT `Primary`, COUNT(*)
+FROM household_income
+GROUP BY `Primary` ;
+
+UPDATE household_income
+SET `Primary` = 'Place'
+WHERE `Primary` = 'place' ;
+
+-- Data cleaning for 'Zip_Code' column
+SELECT Zip_Code, COUNT(*)
+FROM household_income
+GROUP BY Zip_Code
+HAVING COUNT(*) >= 2 
+ORDER BY COUNT(*) ;
+
+WITH
+CTE AS (
+    SELECT Zip_Code, COUNT(*) AS cnt
+    FROM household_income
+    GROUP BY Zip_Code
+    HAVING COUNT(*) >= 2
+)
+SELECT SUM(cnt)
+FROM CTE ;
+
+-- No cleaning needed
+
+-- Data cleaning for 'Area_Code' column
+SELECT Area_Code, COUNT(*)
+FROM household_income
+GROUP BY Area_Code
+HAVING COUNT(*) >= 2 
+ORDER BY COUNT(*) ;
+
+WITH
+CTE AS (
+    SELECT Area_Code, COUNT(*) AS cnt
+    FROM household_income
+    GROUP BY Area_Code
+    HAVING COUNT(*) >= 2
+)
+SELECT SUM(cnt)
+FROM CTE ;
+
+-- No cleaning needed
+
+-- Data cleaning for 'ALand' & 'AWater' column
+SELECT DISTINCT ALand   -- Checking for distinct values
+FROM household_income
+WHERE ALand IS NULL OR ALand IN (0, '') ;
+
+SELECT DISTINCT AWater  -- Checking for distinct values
+FROM household_income
+WHERE AWater IS NULL OR AWater IN (0, '') ;
+
+SELECT ALand, AWater    -- Checking for invalid combination
+FROM household_income
+WHERE ALand = 0 AND AWater = 0 ;
+
+SELECT ALand, AWater
+FROM household_income
+WHERE ALand = 0 ;
+
+SELECT ALand, AWater
+FROM household_income
+WHERE AWater = 0 ;
+
+SELECT ALand, AWater    -- Checking for negative values
+FROM household_income
+WHERE ALand < 0 OR AWater < 0 ;
+
+
+----------------------------------------------------------------------------
+
+-- Data cleaning issues identified during EDA process
+
+----------------------------------------------------------------------------
 
